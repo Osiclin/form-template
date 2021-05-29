@@ -14,3 +14,22 @@ a {
 * {
   box-sizing: border-box;
 }
+
+fieldset{
+  width: 100%;
+  border: 0.5px solid #BDBDBD;
+  height: 45px;
+  padding-top: 0;
+  padding-bottom: 0;
+  color: #8F8B8B;
+  font-size: .7rem;
+  display: flex;
+  justify-content: space-around;
+}
+
+select{
+  width: 100%;
+  border: 0px;
+  background-color: white;
+  outline: 0;
+}
