@@ -8,19 +8,47 @@ export default function Home() {
   const [templates, setTemplates] = useState([])
   const [templatesCount, setTemplatesCount] = useState()
 
+  let views = []
+  let search = []
+
+  //views
+  for (let i = 0; i < 15; i++) {
+    views.push(templates[i])
+  }
+
+  //search
+  const searchItems = (e) => {
+    views = []
+    const string = e.target.value
+    console.log(string)
+
+    const searchResult = templates.filter(template => template.name === string)
+    views.push(searchResult)
+  }
+
   const filterByCategory = (e) => {
     const string = e.target.value
 
-    setActiveCategory(string.charAt(0).toUpperCase() + string.slice(1))
+    setActiveCategory(string)
   }
  
-  useEffect(async () => {
-    const res = await fetch('https://front-end-task-dot-fpls-dev.uc.r.appspot.com/api/v1/public/task_templates')
-    const data = await res.json()
+  // useEffect(async () => {
+  //   const res = await fetch('https://front-end-task-dot-fpls-dev.uc.r.appspot.com/api/v1/public/task_templates')
+  //   const data = await res.json()
 
-    setTemplates(data)
-    setTemplatesCount(data.length)
-    console.log(data)
+  //   setTemplates(data)
+  //   setTemplatesCount(data.length)
+  //   console.log(data)
+  // }, [])
+
+  useEffect(() => {
+    fetch('https://front-end-task-dot-fpls-dev.uc.r.appspot.com/api/v1/public/task_templates')
+    .then(res => res.json())
+    .then(data => {
+      setTemplates(data)
+      setTemplatesCount(data.length)
+    })
+    .catch(err => console.log(err))
   }, [])
 
   return (
@@ -40,7 +68,7 @@ export default function Home() {
 
           <form className={styles.form}>
             <div className={styles.searchDiv}>
-              <input className={styles.searchInput} type="text" placeholder="Search Templates" />
+              <input className={styles.searchInput} type="text" placeholder="Search Templates" onChange={(e) => searchItems(e)}/>
               <div className={styles.searchIconDiv}>
                 <img className={styles.searchIcon} src="/search.png" width="18px" height="18px" />
               </div>
@@ -52,10 +80,10 @@ export default function Home() {
                 <fieldset>
                   <legend>Category</legend>
                   <select name="category" onClick={(e) => filterByCategory(e)}>
-                    <option value="all">All</option>
-                    <option value="health">Health</option>
-                    <option value="e-commerce">E-commerce</option>
-                    <option value="education">Education</option>
+                    <option value="All">All</option>
+                    <option value="Health">Health</option>
+                    <option value="E-commerce">E-commerce</option>
+                    <option value="Education">Education</option>
                   </select>
                 </fieldset>
             
@@ -96,7 +124,7 @@ export default function Home() {
               <div className={styles.cardContainer}>
 
                 {
-                  templates.map(template =>  <Card name={template.name} description={template.description} />)
+                  views.map((item, index) =>  <Card key={index} name={item.name} description={item.description} />)
                 }
                
               </div>
@@ -116,14 +144,3 @@ export default function Home() {
     </div>
   )
 }
-
-// export async function getServerSideProps() {
-//   const res = await fetch('https://front-end-task-dot-fpls-dev.uc.r.appspot.com/api/v1/public/task_templates')
-//   const data = await res.json()
-
-//   return{
-//     props: {
-//       data
-//     }
-//   }
-// }
