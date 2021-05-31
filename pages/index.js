@@ -7,39 +7,41 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState('All')   //Switches Active Category
   const [templates, setTemplates] = useState([])
   const [templatesCount, setTemplatesCount] = useState()
+  const [views, setViews] = useState([])
+  
 
-  let views = []
-  let search = []
-
-  //views
-  for (let i = 0; i < 15; i++) {
-    views.push(templates[i])
+  const getViews = () => {
+    let a = []
+    for (let i = 0; i < 15; i++) {
+      a.push(templates[i])
+    }
+    return a;
   }
 
-  //search
+  //Search Templates by Name
   const searchItems = (e) => {
-    views = []
-    const string = e.target.value
-    console.log(string)
+    const string = e.target.value.toLowerCase()
 
-    const searchResult = templates.filter(template => template.name === string)
-    views.push(searchResult)
+    const searchResult = templates.filter(item => item.name.toLowerCase() === string)
+
+    // const searchCategory = templates.map(item => item.category.Health.toLowerCase())
+    // console.log(searchCategory)
+
+    if (searchResult.length < 1) {
+      setViews(getViews())
+    } else {
+      setViews(searchResult)
+    }
   }
 
+
+  //
   const filterByCategory = (e) => {
     const string = e.target.value
 
     setActiveCategory(string)
   }
- 
-  // useEffect(async () => {
-  //   const res = await fetch('https://front-end-task-dot-fpls-dev.uc.r.appspot.com/api/v1/public/task_templates')
-  //   const data = await res.json()
 
-  //   setTemplates(data)
-  //   setTemplatesCount(data.length)
-  //   console.log(data)
-  // }, [])
 
   useEffect(() => {
     fetch('https://front-end-task-dot-fpls-dev.uc.r.appspot.com/api/v1/public/task_templates')
@@ -47,6 +49,12 @@ export default function Home() {
     .then(data => {
       setTemplates(data)
       setTemplatesCount(data.length)
+
+      let a = []
+      for (let i = 0; i < 15; i++) {
+        a.push(data[i])
+      }
+      setViews(a)
     })
     .catch(err => console.log(err))
   }, [])
