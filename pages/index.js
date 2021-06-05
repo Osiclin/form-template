@@ -3,13 +3,16 @@ import { useEffect, useState } from 'react'
 import Card from '../components/Card'
 import styles from '../styles/Home.module.css'
 
+// const categoryChange = require('../search')
+
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState('All')   //Switches Active Category
-  const [templates, setTemplates] = useState([])
-  const [templatesCount, setTemplatesCount] = useState()
+  const [templates, setTemplates] = useState([])                //All templates received from the API
+  const [templatesCount, setTemplatesCount] = useState()        //Number of templates
+  const [search, setSearch] = useState([])
   const [views, setViews] = useState([])
   
-
+  //Gets the templates to display per page
   const getViews = () => {
     let a = []
     for (let i = 0; i < 15; i++) {
@@ -18,11 +21,68 @@ export default function Home() {
     return a;
   }
 
-  //Search Templates by Name
+  //CategoryChange(activeCategory, templates)
+  const categoryChange = (val, templates) => {
+    if (val === 'All') {
+      let searchResult = []
+      searchResult.push(...templates)
+      setActiveCategory('All')
+      setTemplatesCount(templates.length)
+      return
+    } 
+    else if (val === 'Health') {
+      let searchResult = []
+      const result = templates.filter(item => item.category.find(cat => cat === 'Health'))
+      searchResult.push(result)
+      setSearch(searchResult)
+      setActiveCategory('Health')
+      setTemplatesCount(result.length)
+      return
+    } 
+    else if (val === 'E-commerce') {
+      let searchResult = []
+      const result = templates.filter(item => item.category.find(cat => cat === "E-commerce"))
+      searchResult.push(result)
+      setSearch(searchResult)
+      setActiveCategory('E-commerce')
+      setTemplatesCount(result.length)
+      return
+    } 
+    else {
+      let searchResult = []
+      const result = templates.filter(item => item.category.find(cat => cat === "Education"))
+      searchResult.push(result)
+      setSearch(searchResult)
+      setActiveCategory('Education')
+      setTemplatesCount(result.length)
+      return
+    }
+  }
+
+  //Search Templates Name by active category
   const searchItems = (e) => {
     const string = e.target.value.toLowerCase()
+    let searchResult = []
 
-    const searchResult = templates.filter(item => item.name.toLowerCase() === string)
+    if (activeCategory === 'All') {
+      searchResult.push(...templates.filter(item => item.name.toLowerCase() === string))
+    } 
+    else if (activeCategory === 'Health') {
+      let health = templates.filter(item => item.category.toLowerCase() === "health")
+      searchResult.push(...health.filter(item => item.name === string))
+      setTemplatesCount(health.length)
+    } 
+    else if (activeCategory === 'E-commerce') {
+      let ecommerce = templates.filter(item => item.category.toLowerCase() === "e-commerce")
+      searchResult.push(...ecommerce.filter(item => item.name === string))
+      setTemplatesCount(ecommerce.length)
+    } 
+    else {
+      let education = templates.filter(item => item.category.toLowerCase() === "education")
+      searchResult.push(...education.filter(item => item.name === string))
+      setTemplatesCount(education.length)
+    }
+    
 
     // const searchCategory = templates.map(item => item.category.Health.toLowerCase())
     // console.log(searchCategory)
@@ -37,9 +97,16 @@ export default function Home() {
 
   //
   const filterByCategory = (e) => {
-    const string = e.target.value
-
+    const string = e.target.value.toLowerCase()
     setActiveCategory(string)
+
+    let searchResult = []
+    let filterResult = templates.filter(item => item.category === string)
+    console.log(filterResult)
+    // searchResult.push(filterResult.find(item => item.name.toLowerCase() === string))
+    // setViews(searchResult)
+    // setTemplatesCount(searchResult.length)
+    
   }
 
 
@@ -87,7 +154,7 @@ export default function Home() {
               <div className={styles.fieldsetContainer}>
                 <fieldset>
                   <legend>Category</legend>
-                  <select name="category" onClick={(e) => filterByCategory(e)}>
+                  <select name="category" onClick={(e) => categoryChange(e.target.value, templates)}>
                     <option value="All">All</option>
                     <option value="Health">Health</option>
                     <option value="E-commerce">E-commerce</option>
@@ -142,7 +209,7 @@ export default function Home() {
             {
               templates.length < 1 ? <div></div> : <div className={styles.pageNavigate}>
               <p>Previous</p>
-              <p><span className={styles.currentPage}>1</span> of 14</p>
+              <p><span className={styles.currentPage}>1</span> of {(templatesCount / 15).toFixed(0)}</p>
               <p>Next &gt;</p>
             </div>
             }
