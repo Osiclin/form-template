@@ -13,6 +13,28 @@ export default function Home() {
   const [page, setPage] = useState(1)
 
   let searchbox = useRef(null)
+
+  //Sort function Ascending
+  const sortNameAsc = (a, b) => {
+    if (a.name.toLowerCase() < b.name.toLowerCase()) {
+      return -1
+    } else if (a.name.toLowerCase() > b.name.toLowerCase()) {
+      return 1
+    } else {
+      return 0
+    }
+  }
+
+  //Sort function Descending
+  const sortNameDesc = (a, b) => {
+    if (b.name.toLowerCase() < a.name.toLowerCase()) {
+      return -1
+    } else if (b.name.toLowerCase() > a.name.toLowerCase()) {
+      return 1
+    } else {
+      return 0
+    }
+  }
   
   //Gets the templates to display per page
   const getViews = () => {
@@ -146,11 +168,46 @@ export default function Home() {
   //Filter
   const filter = (e) => {
     const selectName = e.target.name
-    const selectValue = e.target.value
-    console.log(selectValue)
+    const selectValue = e.target.value.toLowerCase()
+    console.log(selectValue, selectName)
+    const result = [...templates]
+    const searchClone = [...search]
 
-    if (selectName === Order && selectValue === 'Ascending') {
-
+    if (activeCategory === 'All') {
+      if (selectName === 'order' && selectValue === 'ascending') { 
+        showViews(result.sort(sortNameAsc))
+      } else if (selectName === 'order' && selectValue === 'descending') {
+        showViews(result.sort(sortNameDesc))
+      } else if (selectName === 'order' && selectValue === 'default') {
+        showViews(templates)
+      }
+    } 
+    else if (activeCategory === 'Health') {
+      if (selectName === 'order' && selectValue === 'ascending') { 
+        showViews(searchClone.sort(sortNameAsc))
+      } else if (selectName === 'order' && selectValue === 'descending') {
+        showViews(searchClone.sort(sortNameDesc))
+      } else if (selectName === 'order' && selectValue === 'default') {
+        showViews(searchClone)
+      }
+    }
+    else if (activeCategory === 'Education') {
+      if (selectName === 'order' && selectValue === 'ascending') { 
+        showViews(searchClone.sort(sortNameAsc))
+      } else if (selectName === 'order' && selectValue === 'descending') {
+        showViews(searchClone.sort(sortNameDesc))
+      } else if (selectName === 'order' && selectValue === 'default') {
+        showViews(searchClone)
+      }
+    }
+    else if (activeCategory === 'E-commerce') {
+      if (selectName === 'order' && selectValue === 'ascending') { 
+        showViews(searchClone.sort(sortNameAsc))
+      } else if (selectName === 'order' && selectValue === 'descending') {
+        showViews(searchClone.sort(sortNameDesc))
+      } else if (selectName === 'order' && selectValue === 'default') {
+        showViews(searchClone)
+      }
     }
   }
 
