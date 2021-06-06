@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Card from '../components/Card'
 import styles from '../styles/Home.module.css'
 
@@ -13,6 +13,8 @@ export default function Home() {
   const [views, setViews] = useState([])
   const [n, setN] = useState(15)
   const [page, setPage] = useState(1)
+
+  let searchbox = useRef(null)
   
   //Gets the templates to display per page
   const getViews = () => {
@@ -50,6 +52,7 @@ export default function Home() {
     } else {}
   }
 
+  //Previous page function
   const prevPage = (search, n) => {
     if (page > 1) {
     setPage(prevState => prevState - 1)
@@ -70,6 +73,7 @@ export default function Home() {
 
   //CategoryChange(activeCategory, templates)
   const categoryChange = (val, templates) => {
+    searchbox.value = ''
     if (val === 'All') {
       showViews(templates)
       setActiveCategory('All')
@@ -111,17 +115,17 @@ export default function Home() {
       searchResult.push(...templates.filter(item => item.name.toLowerCase() === string))
     } 
     else if (activeCategory === 'Health') {
-      let health = templates.filter(item => item.category.toLowerCase() === "health")
+      let health = templates.filter(item => item.category === "health")
       searchResult.push(...health.filter(item => item.name === string))
       setTemplatesCount(health.length)
     } 
     else if (activeCategory === 'E-commerce') {
-      let ecommerce = templates.filter(item => item.category.toLowerCase() === "e-commerce")
+      let ecommerce = templates.filter(item => item.category === "e-commerce")
       searchResult.push(...ecommerce.filter(item => item.name === string))
       setTemplatesCount(ecommerce.length)
     } 
     else {
-      let education = templates.filter(item => item.category.toLowerCase() === "education")
+      let education = templates.filter(item => item.category === "education")
       searchResult.push(...education.filter(item => item.name === string))
       setTemplatesCount(education.length)
     }
@@ -181,7 +185,7 @@ export default function Home() {
 
           <form className={styles.form}>
             <div className={styles.searchDiv}>
-              <input className={styles.searchInput} type="text" placeholder="Search Templates" onChange={(e) => searchItems(e)}/>
+              <input className={styles.searchInput} ref={el => searchbox = el} type="text" placeholder="Search Templates" onChange={(e) => searchItems(e)}/>
               <div className={styles.searchIconDiv}>
                 <img className={styles.searchIcon} src="/search.png" width="18px" height="18px" />
               </div>
