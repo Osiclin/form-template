@@ -99,6 +99,10 @@
   padding: 0 4px;
 }
 
+.pagination{
+  cursor: pointer;
+}
+
 
 @media screen and (max-width: 1300px) {
   .cardContainer{

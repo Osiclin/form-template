@@ -11,6 +11,8 @@ export default function Home() {
   const [templatesCount, setTemplatesCount] = useState()        //Number of templates
   const [search, setSearch] = useState([])
   const [views, setViews] = useState([])
+  const [n, setN] = useState(15)
+  const [page, setPage] = useState(1)
   
   //Gets the templates to display per page
   const getViews = () => {
@@ -21,38 +23,79 @@ export default function Home() {
     return a;
   }
 
+  //Sets views to display
+  const showViews = (data) => {
+    let result = []
+    for (let i = 0; i < 15; i++) {
+      result.push(data[i])
+    }
+    setViews(result)
+  }
+
+  //Next page function
+  const nextPage = (search, n) => {
+    if (page < templates.length) {
+    setPage(prevState => prevState + 1)
+    setN(prevState => prevState + 15)
+    let result = []
+    for (let i = n; i < (15 + n); i++) {
+      if (activeCategory === 'All') {
+        result.push(templates[i])
+      } else {
+        result.push(search[i])
+      }
+    }
+    setViews(result)
+    window.scrollTo(0, 0)
+    } else {}
+  }
+
+  const prevPage = (search, n) => {
+    if (page > 1) {
+    setPage(prevState => prevState - 1)
+    setN(prevState => prevState - 15)
+    let result = []
+    for (let i = n; i < (15 + n); i++) {
+      if (activeCategory === 'All') {
+        result.push(templates[i])
+      } else {
+        result.push(search[i])
+      }
+    }
+    setViews(result)
+    window.scrollTo(0, 0)
+    }
+    else{}
+  }
+
   //CategoryChange(activeCategory, templates)
   const categoryChange = (val, templates) => {
     if (val === 'All') {
-      let searchResult = []
-      searchResult.push(...templates)
+      showViews(templates)
       setActiveCategory('All')
       setTemplatesCount(templates.length)
       return
     } 
     else if (val === 'Health') {
-      let searchResult = []
       const result = templates.filter(item => item.category.find(cat => cat === 'Health'))
-      searchResult.push(result)
-      setSearch(searchResult)
+      setSearch(result)
+      showViews(result)
       setActiveCategory('Health')
       setTemplatesCount(result.length)
       return
     } 
     else if (val === 'E-commerce') {
-      let searchResult = []
       const result = templates.filter(item => item.category.find(cat => cat === "E-commerce"))
-      searchResult.push(result)
-      setSearch(searchResult)
+      setSearch(result)
+      showViews(result)
       setActiveCategory('E-commerce')
       setTemplatesCount(result.length)
       return
     } 
     else {
-      let searchResult = []
       const result = templates.filter(item => item.category.find(cat => cat === "Education"))
-      searchResult.push(result)
-      setSearch(searchResult)
+      setSearch(result)
+      showViews(result)
       setActiveCategory('Education')
       setTemplatesCount(result.length)
       return
@@ -116,12 +159,7 @@ export default function Home() {
     .then(data => {
       setTemplates(data)
       setTemplatesCount(data.length)
-
-      let a = []
-      for (let i = 0; i < 15; i++) {
-        a.push(data[i])
-      }
-      setViews(a)
+      showViews(data) 
     })
     .catch(err => console.log(err))
   }, [])
@@ -208,9 +246,9 @@ export default function Home() {
         
             {
               templates.length < 1 ? <div></div> : <div className={styles.pageNavigate}>
-              <p>Previous</p>
-              <p><span className={styles.currentPage}>1</span> of {(templatesCount / 15).toFixed(0)}</p>
-              <p>Next &gt;</p>
+              <p className={styles.pagination} onClick={() => prevPage(search, n)}>&lt; Previous</p>
+              <p><span className={styles.currentPage}>{page}</span> of {(templatesCount / 15).toFixed(0)}</p>
+              <p className={styles.pagination} onClick={() => nextPage(search, n)}>Next &gt;</p>
             </div>
             }
         
