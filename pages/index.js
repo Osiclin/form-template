@@ -3,8 +3,6 @@ import { useEffect, useRef, useState } from 'react'
 import Card from '../components/Card'
 import styles from '../styles/Home.module.css'
 
-// const categoryChange = require('../search')
-
 export default function Home() {
   const [activeCategory, setActiveCategory] = useState('All')   //Switches Active Category
   const [templates, setTemplates] = useState([])                //All templates received from the API
@@ -32,6 +30,17 @@ export default function Home() {
       result.push(data[i])
     }
     setViews(result)
+  }
+
+  //Search function
+  const getSearchResult = (string) => {
+    let searchResult = []
+    searchResult.push(...search.filter(item => item.name.toLowerCase() === string))
+    if (searchResult.length > 0) {
+      setViews(searchResult)
+    } else {
+      showViews(search)
+    }
   }
 
   //Next page function
@@ -109,53 +118,31 @@ export default function Home() {
   //Search Templates Name by active category
   const searchItems = (e) => {
     const string = e.target.value.toLowerCase()
-    let searchResult = []
-
+    
     if (activeCategory === 'All') {
+      let searchResult = []
       searchResult.push(...templates.filter(item => item.name.toLowerCase() === string))
+      if (searchResult.length > 0) {
+        setViews(searchResult)
+      } else {
+        setViews(getViews())
+      }
     } 
     else if (activeCategory === 'Health') {
-      let health = templates.filter(item => item.category === "health")
-      searchResult.push(...health.filter(item => item.name === string))
-      setTemplatesCount(health.length)
+      getSearchResult(string)
     } 
     else if (activeCategory === 'E-commerce') {
-      let ecommerce = templates.filter(item => item.category === "e-commerce")
-      searchResult.push(...ecommerce.filter(item => item.name === string))
-      setTemplatesCount(ecommerce.length)
+      getSearchResult(string)
     } 
     else {
-      let education = templates.filter(item => item.category === "education")
-      searchResult.push(...education.filter(item => item.name === string))
-      setTemplatesCount(education.length)
-    }
-    
-
-    // const searchCategory = templates.map(item => item.category.Health.toLowerCase())
-    // console.log(searchCategory)
-
-    if (searchResult.length < 1) {
-      setViews(getViews())
-    } else {
-      setViews(searchResult)
+      getSearchResult(string)
     }
   }
 
-
-  //
-  const filterByCategory = (e) => {
-    const string = e.target.value.toLowerCase()
-    setActiveCategory(string)
-
-    let searchResult = []
-    let filterResult = templates.filter(item => item.category === string)
-    console.log(filterResult)
-    // searchResult.push(filterResult.find(item => item.name.toLowerCase() === string))
-    // setViews(searchResult)
-    // setTemplatesCount(searchResult.length)
-    
+  //Filter
+  const filter = (e) => {
+    const string = e.target.value
   }
-
 
   useEffect(() => {
     fetch('https://front-end-task-dot-fpls-dev.uc.r.appspot.com/api/v1/public/task_templates')
@@ -176,7 +163,6 @@ export default function Home() {
         <meta name="description" content="Search for templates to work with easily" />
         <meta name="keywords" content="form template" />
         <meta name="author" content="Osita Ezeigbo" />
-        <link rel="icon" href="/favicon.ico" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
       </Head>
 
@@ -196,7 +182,7 @@ export default function Home() {
               <div className={styles.fieldsetContainer}>
                 <fieldset>
                   <legend>Category</legend>
-                  <select name="category" onClick={(e) => categoryChange(e.target.value, templates)}>
+                  <select name="category" onChange={(e) => categoryChange(e.target.value, templates)}>
                     <option value="All">All</option>
                     <option value="Health">Health</option>
                     <option value="E-commerce">E-commerce</option>
@@ -206,7 +192,7 @@ export default function Home() {
             
                 <fieldset>
                   <legend>Order</legend>
-                  <select name="category">
+                  <select name="order" onChange={(e) => filter(e.target.value)}>
                     <option value="default">Default</option>
                     <option value="ascending">Ascending</option>
                     <option value="descending">Descending</option>
@@ -215,7 +201,7 @@ export default function Home() {
             
                 <fieldset>
                   <legend>Date</legend>
-                  <select name="date">
+                  <select name="date" onChange={(e) => filter(e.target.value)}>
                     <option value="default">Default</option>
                     <option value="ascending">Ascending</option>
                     <option value="descending">Descending</option>
