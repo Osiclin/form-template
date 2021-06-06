@@ -150,7 +150,7 @@ export default function Home() {
     console.log(selectValue)
 
     if (selectName === Order && selectValue === 'Ascending') {
-      
+
     }
   }
 
@@ -229,7 +229,7 @@ export default function Home() {
         </div>
 
             {
-              templates.length < 1 ? <h3>Loading...</h3> : <div>
+              templates.length < 1 ? <h3>Loading...</h3> : <div className={styles.contentContainer}>
               <div className={styles.cardHead}>
                 <p>{activeCategory} Templates</p>
                 <p>{templatesCount} Templates</p>
@@ -240,8 +240,8 @@ export default function Home() {
                   views.map((item, index) =>  <Card key={index} name={item.name} description={item.description} />)
                 }
                
+                </div>
               </div>
-            </div>
             }
         
             {
