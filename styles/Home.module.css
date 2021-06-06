@@ -29,7 +29,7 @@
   height: 40px;
   border: 0.5px solid #BDBDBD;
   border-radius: 2px;
-  padding-left: 30px;
+  padding-left: 14px;
 }
 
 .searchInput:focus{
@@ -80,8 +80,9 @@
 }
 
 .cardContainer{
-  display: grid;
-  grid-template-columns: auto auto auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
   gap: 50px;
 }
 
@@ -110,9 +111,19 @@
   }
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 944px) {
+  .main{
+    padding: 5rem 2rem;
+  }
+}
+
+@media screen and (max-width: 850px) {
+  .main{
+    padding: 5rem 10rem;
+  }
+
   .searchDiv{
-    width: 70%;
+    width: 100%;
   }
 
   .searchInput{
@@ -120,12 +131,12 @@
   }
 
   .sortByDiv{
-    width: 70%;
+    width: 100%;
     flex-direction: column;
   }
 
   .infoSection{
-    width: 70%;
+    width: 100%;
   }
 
   .form{
@@ -140,7 +151,7 @@
 
 @media screen and (max-width: 700px) {
   .main{
-    padding: 5rem;
+    padding: 5rem 3rem;
   }
 
   .searchDiv{

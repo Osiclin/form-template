@@ -86,6 +86,7 @@ export default function Home() {
     if (val === 'All') {
       showViews(templates)
       setActiveCategory('All')
+      setPage(1)
       setTemplatesCount(templates.length)
       return
     } 
@@ -94,6 +95,7 @@ export default function Home() {
       setSearch(result)
       showViews(result)
       setActiveCategory('Health')
+      setPage(1)
       setTemplatesCount(result.length)
       return
     } 
@@ -102,6 +104,7 @@ export default function Home() {
       setSearch(result)
       showViews(result)
       setActiveCategory('E-commerce')
+      setPage(1)
       setTemplatesCount(result.length)
       return
     } 
@@ -110,6 +113,7 @@ export default function Home() {
       setSearch(result)
       showViews(result)
       setActiveCategory('Education')
+      setPage(1)
       setTemplatesCount(result.length)
       return
     }
@@ -141,7 +145,13 @@ export default function Home() {
 
   //Filter
   const filter = (e) => {
-    const string = e.target.value
+    const selectName = e.target.name
+    const selectValue = e.target.value
+    console.log(selectValue)
+
+    if (selectName === Order && selectValue === 'Ascending') {
+      
+    }
   }
 
   useEffect(() => {
@@ -192,7 +202,7 @@ export default function Home() {
             
                 <fieldset>
                   <legend>Order</legend>
-                  <select name="order" onChange={(e) => filter(e.target.value)}>
+                  <select name="order" onChange={(e) => filter(e)}>
                     <option value="default">Default</option>
                     <option value="ascending">Ascending</option>
                     <option value="descending">Descending</option>
@@ -201,7 +211,7 @@ export default function Home() {
             
                 <fieldset>
                   <legend>Date</legend>
-                  <select name="date" onChange={(e) => filter(e.target.value)}>
+                  <select name="date" onChange={(e) => filter(e)}>
                     <option value="default">Default</option>
                     <option value="ascending">Ascending</option>
                     <option value="descending">Descending</option>
