@@ -172,7 +172,7 @@ export default function Home() {
     console.log(selectValue, selectName)
     const result = [...templates]
     const searchClone = [...search]
-
+console.log(views[0].created)
     if (activeCategory === 'All') {
       if (selectName === 'order' && selectValue === 'ascending') { 
         showViews(result.sort(sortNameAsc))
